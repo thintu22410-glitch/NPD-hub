@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidProject(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.code is string && data.code.size() <= 64
+        && data.title is string && data.title.size() <= 256
+        && data.currentGate is number && data.currentGate >= 0 && data.currentGate <= 5
+        && data.health is string && data.health.size() <= 32
+        && data.projectLead is string && data.projectLead.size() <= 128;
+    }
+
+    function isValidCMSConfig(data) {
+      return data.id is string && data.id.size() <= 64;
+    }
+
+    function isValidECO(data) {
+      return data.id is string && data.id.size() <= 128
+        && data.projectId is string && data.projectId.size() <= 128
+        && data.ecoNumber is string && data.ecoNumber.size() <= 64
+        && data.title is string && data.title.size() <= 256
+        && data.status is string && data.status.size() <= 32;
+    }
+
+    // Projects collection
+    match /projects/{projectId} {
+      allow read: if isValidId(projectId);
+      allow create: if isValidId(projectId) && isValidProject(incoming());
+      allow update: if isValidId(projectId) && isValidProject(incoming());
+      allow delete: if isValidId(projectId);
+    }
+
+    // CMS Configurations collection
+    match /cms_configs/{configId} {
+      allow read: if isValidId(configId);
+      allow create: if isValidId(configId) && isValidCMSConfig(incoming());
+      allow update: if isValidId(configId) && isValidCMSConfig(incoming());
+      allow delete: if isValidId(configId);
+    }
+
+    // Engineering Change Orders
+    match /ecos/{ecoId} {
+      allow read: if isValidId(ecoId);
+      allow create: if isValidId(ecoId) && isValidECO(incoming());
+      allow update: if isValidId(ecoId) && isValidECO(incoming());
+      allow delete: if isValidId(ecoId);
+    }
+  }
+}

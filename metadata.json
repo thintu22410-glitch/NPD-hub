@@ -1,0 +1,8 @@
+{
+  "name": "Remix NPD Customised Project Dashboard",
+  "description": "Enterprise New Product Development (NPD) project dashboard with Stage-Gate tracking, portfolio health, milestone timelines, deliverable sign-offs, and local HTML dashboard discovery/import.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

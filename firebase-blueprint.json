@@ -1,0 +1,82 @@
+{
+  "entities": {
+    "Project": {
+      "title": "NPDProject",
+      "description": "New Product Development engineering project tracked across Stage-Gate lifecycle.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "code": { "type": "string", "maxLength": 64 },
+        "title": { "type": "string", "maxLength": 256 },
+        "description": { "type": "string", "maxLength": 2048 },
+        "category": { "type": "string", "maxLength": 128 },
+        "currentGate": { "type": "number" },
+        "health": { "type": "string", "maxLength": 32 },
+        "priority": { "type": "string", "maxLength": 32 },
+        "projectLead": { "type": "string", "maxLength": 128 },
+        "engineeringLead": { "type": "string", "maxLength": 128 },
+        "startDate": { "type": "string", "maxLength": 32 },
+        "targetLaunchDate": { "type": "string", "maxLength": 32 },
+        "budgetAllocated": { "type": "number" },
+        "actualSpend": { "type": "number" },
+        "ecoCount": { "type": "number" },
+        "notes": { "type": "string", "maxLength": 4096 },
+        "deliverables": { "type": "array" },
+        "risks": { "type": "array" },
+        "milestones": { "type": "array" },
+        "attachments": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "code", "title", "currentGate", "health", "projectLead"]
+    },
+    "CMSConfig": {
+      "title": "CMSConfig",
+      "description": "Global customisation rules, stage definitions, and evaluation formulas for the NPD dashboard.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 64 },
+        "stageGates": { "type": "array" },
+        "riskFormula": { "type": "string", "maxLength": 64 },
+        "autoHealthRules": { "type": "boolean" },
+        "criticalSpendThresholdPct": { "type": "number" },
+        "overdueToleranceDays": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id"]
+    },
+    "ECORecord": {
+      "title": "ECORecord",
+      "description": "Engineering Change Order record tracking design modifications and approvals.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "projectId": { "type": "string", "maxLength": 128 },
+        "ecoNumber": { "type": "string", "maxLength": 64 },
+        "title": { "type": "string", "maxLength": 256 },
+        "description": { "type": "string", "maxLength": 2048 },
+        "disposition": { "type": "string", "maxLength": 64 },
+        "costImpact": { "type": "number" },
+        "status": { "type": "string", "maxLength": 32 },
+        "requestedBy": { "type": "string", "maxLength": 128 },
+        "approvedBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "projectId", "ecoNumber", "title", "status"]
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/Project" },
+      "description": "Stores New Product Development projects, deliverables, milestones, and attached files."
+    },
+    "/cms_configs/{configId}": {
+      "schema": { "$ref": "#/entities/CMSConfig" },
+      "description": "Stores CMS configurable stage rules, health formulas, and dashboard parameters."
+    },
+    "/ecos/{ecoId}": {
+      "schema": { "$ref": "#/entities/ECORecord" },
+      "description": "Stores Engineering Change Orders across all NPD projects."
+    }
+  }
+}
